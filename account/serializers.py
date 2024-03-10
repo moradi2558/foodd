@@ -10,9 +10,10 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         def validate(self,data):
             if data[password] != data[password2]:
                 raise serializers.ValidationError('passwords are not the same...')
-        return data
+            return data
     
     
-class UserLoginSerializer(serializers.ModelSerializer):
+class UserLoginSerializer(serializers.Serializer):
     username = serializers.CharField(max_length = 250,required = True)
     password = serializers.CharField(required = True)
+    

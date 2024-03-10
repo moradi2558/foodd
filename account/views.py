@@ -24,7 +24,7 @@ class UserRegisterView(APIView):
         return Response(ser_data,status=200)
 
 
-class UserLoginView(APIVew):
+class UserLoginView(APIView):
     def post(self,request):
         ser_data = UserLoginSerializer(data = request.POST)
         if ser_data.is_valid():
@@ -41,7 +41,7 @@ class UserLoginView(APIVew):
         
     
     
-class UserLogoutView(APIview):
+class UserLogoutView(APIView):
     permission_classes = [IsAuthenticated]
     
     def get(self,request):
