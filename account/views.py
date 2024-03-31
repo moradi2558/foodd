@@ -10,6 +10,7 @@ from . models                   import User
 
 
 class UserRegisterView(APIView):
+    
     def post(self,request):
         ser_data = UserRegisterSerializer(data = request.POST)
         if ser_data.is_valid():

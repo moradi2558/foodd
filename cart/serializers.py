@@ -2,16 +2,22 @@ from rest_framework import serializers
 from . models import *
 
 #serializers
-
-class CartSerializer(serializers.ModelsSerializer):
+class CartSerializerPost(serializers.ModelSerializer):
     class Meta:
         model = Cart
         fields = [
-            'food','quantity',
+            'quantity'
         ]
+class CartSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cart
+        fields ='__all__'
+    
         
-class OrderSerializer(serializers.ModelsSerializer):
+class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = '__all__'
+        fields = [
+            'f_name','l_name','address','email','quantity',
+        ]
 

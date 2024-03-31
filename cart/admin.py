@@ -5,19 +5,15 @@ from.models import*
 class CartAdmin(admin.ModelAdmin):
     list_display = ['user','food','quantity']
 
-class ItemInline(admin.TabularInline):
-    '''Tabular Inlinew for '''
-    model = ItemOrder
-    readoly_fields = ['user','food','quantity','price']
+
     
 class OrderAdmin(admin.ModelAdmin):
     list_display = [
-        'user','email','f_name','l_name','address','create','paid','get_price','code'
+        'user','email','f_name','l_name','address','create','paid','code','quantity'
     ]
-    inlines = [ItemInline]
+    
     
 
 
 admin.site.register(Cart,CartAdmin)
 admin.site.register(Order,OrderAdmin)
-admin.site.register(ItemOrder)
