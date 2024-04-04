@@ -20,9 +20,7 @@ class UserRegisterView(APIView):
         else:
             return Response(ser_data.errors,status = 400)
         
-    def get(self,request):
-        ser_data = UserRegisterSerializer()
-        return Response(ser_data,status=200)
+
 
 
 class UserLoginView(APIView):
@@ -37,8 +35,10 @@ class UserLoginView(APIView):
             if user is not None:
                 login(request,user)
                 return Response(ser_data.data,status = 201)
+            elif not User.objects.filter(username = username).exists():
+                return Response({'this username not exists'})
             else:
-                return Response({'username or email is not match with password'})
+                return Response({'username is not match with password'})
         
     
     
