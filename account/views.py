@@ -48,3 +48,10 @@ class UserLogoutView(APIView):
     def get(self,request):
         logout(request)
         return Response({'logged out....'})
+    
+class UserInfoView(APIView):
+    user = User.objects.get(id=user.request.user.id)
+    context = {
+        'user':user,
+    }
+    return Response(context,status=200)

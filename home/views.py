@@ -12,7 +12,7 @@ class HomeView(APIView):
         data = CategorySerializer(instance=category,many=True)
         food = Food.objects.all()
         food_data = FoodSerializer(instance=food,many=True)
-        context ={
+        context = {
             'category':data.data,
             'food':food_data.data,
         }
@@ -24,7 +24,7 @@ class FoodView(APIView):
         data = CategorySerializer(instance=category,many=True)
         food = Food.objects.filter(category=category_id)
         food_data = FoodSerializer(instance=food,many=True)
-        context ={
+        context = {
             'category':data.data,
             'food':food_data.data,
         }
