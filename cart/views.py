@@ -35,16 +35,11 @@ class CartView(APIView):
                 data.quantity+=1
                 ser_data = CartSerializer(instance=data,many=True)
                 return Response(ser_data.data,status=200) 
-            else:
-                valid_data = CartSerializerPost(data=request.POST)
-                if valid_data.is_valid():
-                    data = valid_data.validated_data    
-                    main_data = Cart.objects.create(food=food,user=request.user,quantity=data['quantity'])
-                    ser_data = Cart.objects.filter(food=food,user=request.user)
-                    real_data = CartSerializer(instance=ser_data,many=True)
-                    return Response(real_data.data,status=200)
-                else:
-                    return Response('error',status=400)
+            else:    
+                main_data = Cart.objects.create(food=food,user=request.user,quantity=1)
+                ser_data = Cart.objects.filter(food=food,user=request.user)
+                real_data = CartSerializer(instance=ser_data,many=True)
+                return Response(real_data.data,status=200)
         return Response('fail')
            
     
