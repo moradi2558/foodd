@@ -11,11 +11,9 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
-<<<<<<< HEAD
 import os
-=======
 from datetime import timedelta
->>>>>>> a1f0849c4d8155ce36d0ee91637ad74480ec11ff
+from django.conf import settings
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
