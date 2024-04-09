@@ -6,12 +6,10 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username','email','password','password2']
-        extra_kwargs = {'password':{'write_only' : True},}
         def validate(self,data):
             if data[password] != data[password2]:
                 raise serializers.ValidationError('passwords are not the same...')
             return data
-    
     
 class UserLoginSerializer(serializers.Serializer):
     username = serializers.CharField(max_length = 250,required = True)

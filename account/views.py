@@ -35,10 +35,10 @@ class UserLoginView(APIView):
             if user is not None:
                 login(request,user)
                 return Response(ser_data.data,status = 201)
-            elif not User.objects.filter(username = username).exists():
-                return Response({'this username not exists'})
+            elif not User.objects.filter(username =data['username']).exists():
+                return Response('نام کاربری موردنظر وجود ندارد')
             else:
-                return Response({'username is not match with password'})
+                return Response('رمز عبور صحیح نمی باشد')
         
     
     
@@ -50,8 +50,9 @@ class UserLogoutView(APIView):
         return Response({'logged out....'})
     
 class UserInfoView(APIView):
-    user = User.objects.get(id=user.request.user.id)
-    context = {
+    def get(self,request):
+        user = User.objects.get(id=user.request.user.id)
+        context = {
         'user':user,
-    }
-    return Response(context,status=200)
+        }
+        return Response(context,status=200)
