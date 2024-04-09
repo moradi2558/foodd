@@ -15,3 +15,8 @@ class UserLoginSerializer(serializers.Serializer):
     username = serializers.CharField(max_length = 250,required = True)
     password = serializers.CharField(required = True)
     
+class UserInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = '__all__'
+    

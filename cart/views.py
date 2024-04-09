@@ -1,12 +1,12 @@
 from home.models                    import *
-from.models                         import*
-from django.contrib.auth.decorators import login_required
+from.models                         import *
+from .serializers                   import *
 from rest_framework.views           import APIView
 from rest_framework.response        import Response
+from django.contrib.auth.decorators import login_required
 from rest_framework                 import viewsets,status
-from .serializers                   import *
-from django.utils.crypto            import get_random_string
 from rest_framework.permissions     import IsAuthenticated
+from django.utils.crypto            import get_random_string
 # Create your views here.
 
 class CartView(APIView):
@@ -43,23 +43,30 @@ class CartView(APIView):
         return Response('fail')
            
     
-class Remove_Cart(APIView):
-    
+class Remove_CartView(APIView):
     def get(self,request,food_id):
         permission_classes = [IsAuthenticated]
         """
         private
         """
-        if request.user.is_authenticated:
-            data = Cart.objects.get(food=food_id,user=reuest.user)
-            if data.quantity > 1 :
-                data.quantity -= 1
-                data.save()
-                return Response('being lower...')
-            else :
-                Cart.objects.get(food=food_id,user=user).delete()
-                return Response('being removed...')
+        data = Cart.objects.get(food=food_id,user=reuest.user)
+        if data.quantity > 1 :
+            data.quantity -= 1
+            data.save()
+            return Response('being lower...')
+        else :
+            Cart.objects.get(food=food_id,user=user).delete()
+            return Response('being removed...')
+
+class Delete_cartView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self,request,food_id):
+        data = Cart.objects.get(food=food_id,user=reuest.user).delete()
+        return Response('item being deleted')
         
+        
+    
+      
 class OrderView(APIView):
     def get(self,request,food_id):
         order = Order.objects.filter(food=food_id,user=request.user)
