@@ -23,8 +23,6 @@ class UserRegisterView(APIView):
             login(request,user)
             user = User.objects.filter(id=user.id)
             user_info = UserInfoSerializer(instance = user,many=True)
-            cart_info = Cart.objects.filter(user=request.user)
-            cart = CartSerializer(instance=cart_info,many=True)
             context = {
                 'user':user_info.data,
             }    
@@ -47,7 +45,7 @@ class UserLoginView(APIView):
             if user is not None:
                 login(request,user)
                 return Response(ser_data.data,status = 201)
-            elif not User.objects.filter(username = data['username']).exists():
+            elif not User.objects.filter(username =data['username']).exists():
                 return Response('نام کاربری موردنظر وجود ندارد')
                 user = User.objects.filter(id=user.id)
                 user_info = UserInfoSerializer(instance=user,many=True)
@@ -59,9 +57,10 @@ class UserLoginView(APIView):
                 }       
                 return Response(context,status = 201)
             elif not User.objects.filter(username = data['username']).exists():
-                return Response('نام کاربری موردنظر وجود ندارد')
+                return Response({'this username not exists'})
             else:
                 return Response('رمز عبور صحیح نمی باشد')
+        
     
     
 class UserLogoutView(APIView):
