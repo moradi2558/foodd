@@ -10,8 +10,9 @@ from django.utils.crypto            import get_random_string
 # Create your views here.
 
 class CartView(APIView):
+    permission_classes = [IsAuthenticated]
+    
     def get(self,request,food_id):
-        permission_classes = [IsAuthenticated]
         if request.user.is_authenticated:
             cart = Cart.objects.filter(user=request.user)
             data = CartSerializer(instance=cart,many=True)
@@ -19,7 +20,6 @@ class CartView(APIView):
         return Response('fail')
     
     def post(self,request,food_id):
-        permission_classes = [IsAuthenticated]
         
         """
         private
@@ -28,19 +28,19 @@ class CartView(APIView):
         
         need : quantity
         """
-        if request.user.is_authenticated:
-            data = Cart.objects.filter(food=food_id,user=request.user)
-            food=Food.objects.get(id=food_id)
-            if data :
-                data.quantity+=1
-                ser_data = CartSerializer(instance=data,many=True)
-                return Response(ser_data.data,status=200) 
-            else:    
-                main_data = Cart.objects.create(food=food,user=request.user,quantity=1)
-                ser_data = Cart.objects.filter(user=request.user)
-                foods = Food.objects.filter()
-                real_data = CartSerializer(instance=ser_data,many=True)
-                return Response(real_data.data,status=200)
+        food = Food.objects.get(id=food_id)
+        if Cart.objects.filter(food=food_id,user=request.user).exists():
+            data = Cart.objects.get(food=food_id,user=request.user)
+            data.quantity +=1
+            data.save()
+            data = Cart.objects.filter(user=request.user,food=food)
+            ser_data = CartSerializer(instance=data,many=True)
+            return Response(ser_data.data,status=200) 
+        else:    
+            main_data = Cart.objects.create(food=food,user=request.user,quantity=1)
+            ser_data = Cart.objects.filter(user=request.user,food=food)
+            real_data = CartSerializer(instance=ser_data,many=True)
+            return Response(real_data.data,status=200)
         return Response('fail')
            
     
@@ -83,7 +83,7 @@ class OrderView(APIView):
             data = ser_data.validated_data
             code = get_random_string
             quantity = data['quantity']
-            main = Order.objects.create(user=user,code=code,
+            main = Order.objects.create(user=request.user,code=code,
                                         f_name=data['f_name'],l_name=data['l_name'],
                                         address=data['address'],email=data['email'],
                                         food=food,quantity=quantity,)
