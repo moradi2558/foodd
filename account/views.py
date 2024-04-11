@@ -27,7 +27,6 @@ class UserRegisterView(APIView):
             cart = CartSerializer(instance=cart_info,many=True)
             context = {
                 'user':user_info.data,
-                'cart':cart.data,
             }    
             return Response(context,status = 201)
         else:
@@ -74,8 +73,10 @@ class UserLogoutView(APIView):
     
 class UserInfoView(APIView):
     def get(self,request):
-        user = User.objects.get(id=user.request.user.id)
+        user_info = User.objects.get(id=request.user.id)
+        user = UserInfoSerializer(instance=user_info,many=True)
         context = {
         'user':user,
         }
         return Response(context,status=200)
+

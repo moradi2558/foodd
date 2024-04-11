@@ -37,7 +37,8 @@ class CartView(APIView):
                 return Response(ser_data.data,status=200) 
             else:    
                 main_data = Cart.objects.create(food=food,user=request.user,quantity=1)
-                ser_data = Cart.objects.filter(food=food,user=request.user)
+                ser_data = Cart.objects.filter(user=request.user)
+                foods = Food.objects.filter()
                 real_data = CartSerializer(instance=ser_data,many=True)
                 return Response(real_data.data,status=200)
         return Response('fail')
@@ -69,6 +70,7 @@ class Delete_cartView(APIView):
       
 class OrderView(APIView):
     def get(self,request,food_id):
+        permission_classes = [IsAuthenticated]
         order = Order.objects.filter(food=food_id,user=request.user)
         data = OrderSerializer(instance=order,many=True)
         return Response(data.data,status=200)
