@@ -45,38 +45,31 @@ class CartView(APIView):
            
     
 class Remove_CartView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self,request,food_id):
-        permission_classes = [IsAuthenticated]
-        """
-        private
-        """
-        data = Cart.objects.get(food=food_id,user=reuest.user)
+        data = Cart.objects.get(food=food_id,user=request.user)
         if data.quantity > 1 :
             data.quantity -= 1
             data.save()
             return Response('being lower...')
-        else :
-            Cart.objects.get(food=food_id,user=user).delete()
+        else:
+            Cart.objects.get(food=food_id,user=request.user).delete()
             return Response('being removed...')
-
-class Delete_cartView(APIView):
-    permission_classes = [IsAuthenticated]
-    def get(self,request,food_id):
-        data = Cart.objects.get(food=food_id,user=reuest.user).delete()
-        return Response('item being deleted')
-        
-        
-    
       
+    def delete(self,request,food_id):
+        data = Cart.objects.get(food=food_id,user=request.user).delete()
+        return Response('item being deleted')
+    
 class OrderView(APIView):
+    permission_classes = [IsAuthenticated]
+    
     def get(self,request,food_id):
-        permission_classes = [IsAuthenticated]
         order = Order.objects.filter(food=food_id,user=request.user)
         data = OrderSerializer(instance=order,many=True)
         return Response(data.data,status=200)
     
     def post(self,request,food_id):
-        permission_classes = [IsAuthenticated]
         """
         private
         
