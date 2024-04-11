@@ -13,7 +13,7 @@ class CartView(APIView):
     def get(self,request,food_id):
         permission_classes = [IsAuthenticated]
         if request.user.is_authenticated:
-            cart = Cart.objects.filter(food=food_id,user=request.user)
+            cart = Cart.objects.filter(user=request.user)
             data = CartSerializer(instance=cart,many=True)
             return Response(data.data,status=200)
         return Response('fail')
