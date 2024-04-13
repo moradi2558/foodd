@@ -8,7 +8,7 @@ class CartSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cart
         fields = [
-            'food','user','quantity'
+            'food','user','quantity','id',
         ]
     
         
@@ -18,6 +18,6 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = [
-            'f_name','l_name','address','email','food','cart'
+            'f_name','l_name','address','email','food','cart','id',
         ]
 
