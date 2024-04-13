@@ -18,6 +18,6 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = [
-            'f_name','l_name','address','email','quantity','food','cart'
+            'f_name','l_name','address','email','food','cart'
         ]
 

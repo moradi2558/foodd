@@ -64,12 +64,12 @@ class Remove_CartView(APIView):
 class OrderView(APIView):
     permission_classes = [IsAuthenticated]
     
-    def get(self,request,food_id):
-        order = Order.objects.filter(food=food_id,user=request.user)
+    def get(self,request,cart_id):
+        order = Order.objects.filter(cart=cart_id,user=request.user)
         data = OrderSerializer(instance=order,many=True)
         return Response(data.data,status=200)
     
-    def post(self,request,food_id):
+    def post(self,request,cart_id):
         """
         private
         
@@ -78,15 +78,14 @@ class OrderView(APIView):
         need : f_name,l_name,address,email,quantity
         """
         ser_data = OrderSerializer(data=request.POST)
-        food = Food.objects.get(id=food_id)
+        cart = Cart.objects.get(id=cart_id)
         if ser_data.is_valid():
             data = ser_data.validated_data
             code = get_random_string
-            quantity = data['quantity']
             main = Order.objects.create(user=request.user,code=code,
                                         f_name=data['f_name'],l_name=data['l_name'],
                                         address=data['address'],email=data['email'],
-                                        food=food,quantity=quantity,)
+                                        cart=cart)
             main_data = Order.objects.filter(user=request.user,code=code)
             ser_data = OrderSerializer(instance=main_data,many=True)
             return Response(ser_data.data,status=200)

@@ -9,7 +9,7 @@ class CartAdmin(admin.ModelAdmin):
     
 class OrderAdmin(admin.ModelAdmin):
     list_display = [
-        'user','email','f_name','l_name','address','create','paid','code','quantity'
+        'user','cart','email','f_name','l_name','address','create','paid','code',
     ]
     
     
