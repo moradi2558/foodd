@@ -13,7 +13,6 @@ class Cart(models.Model):
     
 class Order(models.Model):
     user = models.ForeignKey(User,on_delete = models.CASCADE)
-    cart = models.ForeignKey(Cart,on_delete = models.CASCADE,null =True)
     create = models.DateTimeField(auto_now_add =True)
     paid = models.BooleanField(default = False)
     code = models.CharField(max_length = 200,null = True)
@@ -25,3 +24,8 @@ class Order(models.Model):
     def __str__(self):
         return self.user.username
     
+class ItemOrder(models.Model):
+    user = models.ForeignKey(User,on_delete = models.CASCADE)
+    food = models.ForeignKey(Food,on_delete = models.CASCADE)
+    order =  models.ForeignKey(Order,on_delete = models.CASCADE)
+    quantity = models.IntegerField()

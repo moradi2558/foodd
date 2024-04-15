@@ -13,11 +13,19 @@ class CartSerializer(serializers.ModelSerializer):
     
         
 class OrderSerializer(serializers.ModelSerializer):
-    food = FoodSerializer(read_only=True)
-    cart = CartSerializer(read_only=True)
+    
     class Meta:
         model = Order
         fields = [
-            'f_name','l_name','address','email','food','cart','id',
+            'f_name','l_name','address','email','id',
         ]
 
+class ItemOrderSerializer(serializers.ModelSerializer):
+    food = FoodSerializer(read_only=True)
+    cart = CartSerializer(read_only=True)
+   
+    class Meta:
+        model = ItemOrder
+        fields = [
+           'food','cart','user','quantity',
+        ]

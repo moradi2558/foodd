@@ -33,12 +33,12 @@ class CartView(APIView):
             data = Cart.objects.get(food=food_id,user=request.user)
             data.quantity +=1
             data.save()
-            data = Cart.objects.filter(user=request.user,food=food)
+            data = Cart.objects.filter(user=request.user)
             ser_data = CartSerializer(instance=data,many=True)
             return Response(ser_data.data,status=200) 
         else:    
             main_data = Cart.objects.create(food=food,user=request.user,quantity=1)
-            ser_data = Cart.objects.filter(user=request.user,food=food)
+            ser_data = Cart.objects.filter(user=request.user)
             real_data = CartSerializer(instance=ser_data,many=True)
             return Response(real_data.data,status=200)
         return Response('fail')
@@ -64,12 +64,17 @@ class Remove_CartView(APIView):
 class OrderView(APIView):
     permission_classes = [IsAuthenticated]
     
-    def get(self,request,cart_id):
-        order = Order.objects.filter(cart=cart_id,user=request.user)
+    def get(self,request):
+        order = Order.objects.filter(user=request.user)
+        itemorderr = ItemOrder.objects.filter(user = request.user)
+        itemorder = ItemOrderSerializer(instance = itemorderr,many=True)
         data = OrderSerializer(instance=order,many=True)
-        return Response(data.data,status=200)
+        context = {
+            'order': data.data, 'itemorder':itemorder.data, 
+        }
+        return Response(context,status=200)
     
-    def post(self,request,cart_id):
+    def post(self,request):
         """
         private
         
@@ -78,17 +83,32 @@ class OrderView(APIView):
         need : f_name,l_name,address,email,quantity
         """
         ser_data = OrderSerializer(data=request.POST)
-        cart = Cart.objects.get(id=cart_id)
         if ser_data.is_valid():
             data = ser_data.validated_data
             code = get_random_string
-            main = Order.objects.create(user=request.user,code=code,
-                                        f_name=data['f_name'],l_name=data['l_name'],
-                                        address=data['address'],email=data['email'],
-                                        cart=cart)
+            if Order.objects.filter(user=request.user).exists():
+                Order.objects.update(user=request.user,code=code,
+                                f_name=data['f_name'],l_name=data['l_name'],
+                                address=data['address'],email=data['email'],)
+            else:
+                Order.objects.create(user=request.user,code=code,
+                                f_name=data['f_name'],l_name=data['l_name'],
+                                address=data['address'],email=data['email'],)
+            cart = Cart.objects.filter(user=request.user)
+            order = Order.objects.get(user = request.user)
+            for c in cart :
+                try :
+                    find = ItemOrder.objects.get(user=request.user,food=c.food,order=order)
+                except:
+                    ItemOrder.objects.create(user = request.user,food = c.food,order=order,quantity=c.quantity)
             main_data = Order.objects.filter(user=request.user,code=code)
             ser_data = OrderSerializer(instance=main_data,many=True)
-            return Response(ser_data.data,status=200)
+            itemorderr = ItemOrder.objects.filter(user = request.user)
+            itemorder = ItemOrderSerializer(instance = itemorderr,many=True)
+            context = {
+            'order': ser_data.data, 'itemorder':itemorder.data, 
+            }
+            return Response(context,status=200)
         else:
             return Response("error",status=400)    
     

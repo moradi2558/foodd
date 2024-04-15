@@ -9,11 +9,15 @@ class CartAdmin(admin.ModelAdmin):
     
 class OrderAdmin(admin.ModelAdmin):
     list_display = [
-        'user','cart','email','f_name','l_name','address','create','paid','code',
+        'user','email','f_name','l_name','address','create','paid','code',
     ]
     
+class ItemOrderAdmin(admin.ModelAdmin):
+    list_display = [
+        'user','food','order','quantity'
+        ]
     
 
-
+admin.site.register(ItemOrder,ItemOrderAdmin)
 admin.site.register(Cart,CartAdmin)
 admin.site.register(Order,OrderAdmin)
