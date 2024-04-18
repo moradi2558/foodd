@@ -1,0 +1,19 @@
+.mini_cart {
+    min-height: 70vh;
+    position: absolute;
+    animation: myAnim .4s ease 0s 1 normal forwards;
+}
+
+@keyframes myAnim {
+	0% {
+		animation-timing-function: ease-in;
+		opacity: 0;
+		transform: translateX(-250px);
+	}
+
+	100% {
+		animation-timing-function: ease-in-out;
+		opacity: 1;
+		transform: translateX(0);
+	}
+}
