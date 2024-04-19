@@ -43,11 +43,50 @@ const Login = () => {
     fetch("http://127.0.0.1:8000/account/login/", {
       method: "POST",
       body: formData,
-    })
-      .then((res) => {
-        if (res.status === 201) {
-          setIsShowLoader(false);
-          toast.success("با موفقیت وارد شدید", {
+    }).then((res) => {
+      setIsShowLoader(false);
+      if (res.status === 201) {
+        toast.success("با موفقیت وارد شدید", {
+          position: "top-left",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        res.json().then((result) => {
+          console.log(result);
+          fetch("http://127.0.0.1:8000/account/token/", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(result),
+          })
+            .then((res) => res.json())
+            .then((result) => {
+              if (result.access) {
+                authContext.login(result.access);
+                navigate(-1);
+              } else {
+                toast.error("خطایی رخ داده است", {
+                  position: "top-left",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "light",
+                });
+              }
+            });
+        });
+      } else {
+        res.json().then((result) => {
+          toast.error(result, {
             position: "top-left",
             autoClose: 5000,
             hideProgressBar: false,
@@ -57,38 +96,9 @@ const Login = () => {
             progress: undefined,
             theme: "light",
           });
-          return res.json();
-        }
-      })
-      .then((result) => {
-        fetch("http://127.0.0.1:8000/account/token/", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(result),
-        })
-          .then((res) => res.json())
-          .then((result) => {
-            if (result.access) {
-              authContext.login(result.access, {
-                username: formState.inputs.username.value,
-              });
-              navigate(-1);
-            } else {
-              toast.error("خطایی رخ داده است", {
-                position: "top-left",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-              });
-            }
-          });
-      });
+        });
+      }
+    });
   };
   return (
     <>
