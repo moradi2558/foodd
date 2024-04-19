@@ -65,14 +65,10 @@ class OrderView(APIView):
     permission_classes = [IsAuthenticated]
     
     def get(self,request):
-        order = Order.objects.filter(user=request.user)
-        itemorderr = ItemOrder.objects.filter(user = request.user)
-        itemorder = ItemOrderSerializer(instance = itemorderr,many=True)
-        data = OrderSerializer(instance=order,many=True)
-        context = {
-            'order': data.data, 'itemorder':itemorder.data, 
-        }
-        return Response(context,status=200)
+        Cart.objects.filter(user = request.user).delete()
+        Order.objects.filter(user = request.user).delete()
+        ItemOrder.objects.filter(user = request.user).delete()
+        return Response({'order,itemorder,cart has been delete'},status=200)
     
     def post(self,request):
         """
@@ -111,7 +107,8 @@ class OrderView(APIView):
             return Response(context,status=200)
         else:
             return Response("error",status=400)    
-    
+
+
     
             
 

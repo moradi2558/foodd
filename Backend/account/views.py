@@ -57,7 +57,7 @@ class UserLoginView(APIView):
                 }       
                 return Response(context,status = 201)
             elif not User.objects.filter(username = data['username']).exists():
-                return Response({'this username not exists'})
+                return Response({'این کاربر وجود ندارد'})
             else:
                 return Response('رمز عبور صحیح نمی باشد')
         
