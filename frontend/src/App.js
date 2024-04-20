@@ -111,6 +111,7 @@ function App() {
           draggable
           pauseOnHover
           theme="light"
+          limit={3}
           style={{ fontWeight: "bolder", fontSize: "16px" }}
         />
         {router}

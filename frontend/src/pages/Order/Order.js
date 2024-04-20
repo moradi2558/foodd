@@ -15,6 +15,7 @@ import AuthContext from "../../context/AuthContext";
 import Loader from "../../components/Loader/Loader";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 const Order = () => {
   const navigate = useNavigate();
   const authContext = useContext(AuthContext);
@@ -60,17 +61,23 @@ const Order = () => {
       }).then((res) => {
         setIsShowLoader(false);
         if (res.ok) {
-          toast.success("سفارش شما با موفقیت ثبت شد", {
-            position: "top-left",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
+          fetch("http://localhost:8000/cart/order/", {
+            headers: {
+              Authorization: `Bearer ${
+                JSON.parse(localStorage.getItem("user")).token
+              }`,
+            },
+          }).then((res) => {
+            if (res.ok) {
+              authContext.getCartUser();
+              Swal.fire({
+                icon: "success",
+                title: "سفارش شما با موفقیت ثبت شد",
+                confirmButtonText: "تایید",
+              });
+              navigate("/");
+            }
           });
-          navigate("/");
         } else {
           toast.error("خطایی رخ داده است", {
             position: "top-left",

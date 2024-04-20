@@ -105,6 +105,7 @@ const Register = () => {
             theme: "light",
           });
         } else if (result.user) {
+          console.log(`result.user => ${result.user}`);
           fetch("http://localhost:8000/account/token/", {
             method: "POST",
             headers: {
