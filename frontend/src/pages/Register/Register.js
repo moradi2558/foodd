@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/Footer";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Input from "../../components/Form/Input";
 import {
   emailValidator,
@@ -16,7 +16,9 @@ import useForm from "../../hooks/useForm";
 import Breadcrumb from "../../components/Breadcrumb/Breadcrumb";
 import Loader from "../../components/Loader/Loader";
 import { toast } from "react-toastify";
+import AuthContext from "../../context/AuthContext";
 const Register = () => {
+  const authContext = useContext(AuthContext);
   const [formState, onInputHandler] = useForm(
     {
       username: {
@@ -42,6 +44,7 @@ const Register = () => {
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [isShowRepeatPassword, setIsShowRepeatPassword] = useState(false);
   const [isShowLoader, setIsShowLoader] = useState(false);
+  const navigate = useNavigate();
   const registerHandler = () => {
     setIsShowLoader(true);
     const formData = new FormData();
@@ -70,7 +73,6 @@ const Register = () => {
         return res.json();
       })
       .then((result) => {
-        console.log(result);
         if (result.email && result.username) {
           toast.error("کاربری با این ایمیل و نام کاربری وجود دارد", {
             position: "top-left",
@@ -105,7 +107,6 @@ const Register = () => {
             theme: "light",
           });
         } else if (result.user) {
-          console.log(`result.user => ${result.user}`);
           fetch("http://localhost:8000/account/token/", {
             method: "POST",
             headers: {
@@ -117,7 +118,10 @@ const Register = () => {
             }),
           })
             .then((res) => res.json())
-            .then((data) => console.log(data));
+            .then((data) => {
+              authContext.login(data.access);
+              navigate(-1);
+            });
         }
       });
   };

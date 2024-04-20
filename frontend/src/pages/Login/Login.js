@@ -57,7 +57,6 @@ const Login = () => {
           theme: "light",
         });
         res.json().then((result) => {
-          console.log(result);
           fetch("http://127.0.0.1:8000/account/token/", {
             method: "POST",
             headers: {

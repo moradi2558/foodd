@@ -1,4 +1,4 @@
-import { useRoutes } from "react-router-dom";
+import { useNavigate, useRoutes } from "react-router-dom";
 import "./App.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -7,6 +7,7 @@ import routes from "./Routes";
 import { useEffect, useState } from "react";
 function App() {
   const router = useRoutes(routes);
+  const navigate = useNavigate();
   const [token, setToken] = useState(null);
   const [cart, setCart] = useState({
     cart: [],
@@ -31,6 +32,7 @@ function App() {
     });
     setIsLoggedIn(false);
     localStorage.removeItem("user");
+    navigate("/");
   };
 
   const getCartUser = () => {
@@ -50,7 +52,6 @@ function App() {
           }
         })
         .then((result) => {
-          console.log(result);
           setCart({
             cart: [],
             totalPrice: 0,
