@@ -59,3 +59,7 @@
         transform: scale(1);
     }
 }
+
+.OffcanvasBackdrop {
+    z-index: 9001;
+}

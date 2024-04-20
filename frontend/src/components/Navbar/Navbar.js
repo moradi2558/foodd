@@ -315,7 +315,9 @@ const Navbar = () => {
         onHide={handleClose}
         placement="end"
         className="tw-bg-zinc-900 tw-text-white lg:tw-hidden"
-        style={{ zIndex: "999999" }}
+        style={{ zIndex: "9002" }}
+        backdropClassName="OffcanvasBackdrop"
+        responsive="xl"
       >
         <Offcanvas.Header>
           <Offcanvas.Title className="tw-flex tw-justify-between tw-w-full tw-pr-3 tw-items-center">
@@ -355,10 +357,15 @@ const Navbar = () => {
             to="/cart"
             className={({ isActive }) =>
               isActive
-                ? "nav-item-active__mobile tw-mx-1 tw-text-end tw-mb-3 tw-py-3 tw-text-2xl"
-                : "nav-item__mobile tw-mx-1 tw-text-end tw-mb-3 tw-py-3 tw-text-2xl"
+                ? "nav-item-active__mobile tw-mx-1 tw-mb-3 tw-py-3 tw-text-2xl tw-flex tw-justify-end tw-items-center"
+                : "nav-item__mobile tw-mx-1 tw-mb-3 tw-py-3 tw-text-2xl tw-flex tw-justify-end tw-items-center"
             }
           >
+            {authContext.cart.count !== 0 && (
+              <div className="tw-h-fit tw-font-bold tw-mr-2 tw-text-sm tw-text-zinc-900 tw-pt-1 tw-px-2 tw-bg-white tw-rounded-full">
+                <span>{authContext.cart.count}</span>
+              </div>
+            )}
             سبد خرید
           </NavLink>
           {authContext.isLoggedIn ? (
