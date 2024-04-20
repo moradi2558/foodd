@@ -21,10 +21,8 @@ class UserRegisterView(APIView):
             User.objects.create_user(username = data['username'],email = data['email'],password = data['password'])
             user = authenticate(request,username = data['username'],password = data['password'])
             login(request,user)
-            user = User.objects.filter(id=user.id)
-            user_info = UserInfoSerializer(instance = user,many=True)
             context = {
-                'user':user_info.data,
+                'user':ser_data.data,
             }    
             return Response(context,status = 201)
         else:
