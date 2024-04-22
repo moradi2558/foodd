@@ -3,21 +3,26 @@ import "./FoodBox.css";
 import AuthContext from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import apiRequests from "../../services/configs";
 const FoodBox = ({ className, price, name, discount, image, desc, id }) => {
   const navigate = useNavigate();
   const authContext = useContext(AuthContext);
   const discountedPrice = price - (price * discount) / 100;
   const addToCart = () => {
     if (localStorage.getItem("user")) {
-      fetch(`http://localhost:8000/cart/cart/${id}/`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${
-            JSON.parse(localStorage.getItem("user")).token
-          }`,
-        },
-      }).then((res) => {
-        if (res.ok) {
+      apiRequests
+        .post(
+          `/cart/cart/${id}/`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${
+                JSON.parse(localStorage.getItem("user")).token
+              }`,
+            },
+          }
+        )
+        .then(() => {
           toast.info(`${name} به سبد خرید اضافه شد`, {
             position: "top-left",
             autoClose: 5000,
@@ -29,8 +34,35 @@ const FoodBox = ({ className, price, name, discount, image, desc, id }) => {
             theme: "light",
           });
           authContext.getCartUser();
-        }
-      });
+        })
+        .catch((err) => {
+          if (err.response.status === 401) {
+            authContext.logout();
+            toast.info("برای افزودن محصول به سبدخرید باید وارد سایت بشوید", {
+              position: "top-left",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+              style: { fontSize: 13 },
+            });
+            navigate("/login");
+          } else {
+            toast.error("خطایی رخ داده است", {
+              position: "top-left",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+          }
+        });
     } else {
       authContext.logout();
       toast.info("برای افزودن محصول به سبدخرید باید وارد سایت بشوید", {

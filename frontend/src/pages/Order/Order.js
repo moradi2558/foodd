@@ -16,6 +16,7 @@ import Loader from "../../components/Loader/Loader";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import apiRequests from "../../services/configs";
 const Order = () => {
   const navigate = useNavigate();
   const authContext = useContext(AuthContext);
@@ -50,35 +51,36 @@ const Order = () => {
       formData.append("l_name", formState.inputs.l_name.value);
       formData.append("email", formState.inputs.email.value);
       formData.append("address", formState.inputs.address.value);
-      fetch("http://127.0.0.1:8000/cart/order/", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${
-            JSON.parse(localStorage.getItem("user")).token
-          }`,
-        },
-        body: formData,
-      }).then((res) => {
-        setIsShowLoader(false);
-        if (res.ok) {
-          fetch("http://localhost:8000/cart/order/", {
-            headers: {
-              Authorization: `Bearer ${
-                JSON.parse(localStorage.getItem("user")).token
-              }`,
-            },
-          }).then((res) => {
-            if (res.ok) {
-              authContext.getCartUser();
+      apiRequests
+        .post("/cart/order/", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${
+              JSON.parse(localStorage.getItem("user")).token
+            }`,
+          },
+        })
+        .then(() => {
+          apiRequests
+            .get("/cart/order/", {
+              headers: {
+                Authorization: `Bearer ${
+                  JSON.parse(localStorage.getItem("user")).token
+                }`,
+              },
+            })
+            .then(async () => {
+              await authContext.getCartUser();
               Swal.fire({
                 icon: "success",
                 title: "سفارش شما با موفقیت ثبت شد",
                 confirmButtonText: "تایید",
               });
               navigate("/");
-            }
-          });
-        } else {
+              setIsShowLoader(false);
+            });
+        })
+        .catch(() => {
           toast.error("خطایی رخ داده است", {
             position: "top-left",
             autoClose: 5000,
@@ -89,8 +91,7 @@ const Order = () => {
             progress: undefined,
             theme: "light",
           });
-        }
-      });
+        });
     }
   };
   return (

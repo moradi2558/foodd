@@ -7,12 +7,6 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 const LastFoods = ({ foods }) => {
-  // const [foods, setFoods] = useState(props.foods);
-  // useEffect(() => {
-  //   fetch("http://localhost:8000/home/")
-  //     .then((res) => res.json())
-  //     .then((data) => setFoods(data.food));
-  // }, []);
   return (
     <>
       <p className="tw-text-yellow-500 tw-text-md tw-font-extrabold tw-text-center tw-mb-3 tw-mt-5">

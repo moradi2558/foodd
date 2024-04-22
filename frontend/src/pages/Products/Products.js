@@ -7,6 +7,8 @@ import Pagination from "../../components/Pagination/Pagination";
 import Loader from "../../components/Loader/Loader";
 import Breadcrumb from "../../components/Breadcrumb/Breadcrumb";
 import { Link, useParams, useNavigate } from "react-router-dom";
+import apiRequests from "../../services/configs";
+import { toast } from "react-toastify";
 const Products = () => {
   const { categoryName } = useParams();
   const navigate = useNavigate();
@@ -19,31 +21,43 @@ const Products = () => {
 
   useEffect(() => {
     if (categoryName === "all") {
-      fetch("http://localhost:8000/home/")
-        .then((res) => res.json())
-        .then((data) => {
-          setFoods(data.food);
-          setSortedFoods(data.food);
-          setCategories(data.category);
+      apiRequests
+        .get("/home/")
+        .then((res) => {
+          setFoods(res.data.food);
+          setSortedFoods(res.data.food);
+          setCategories(res.data.category);
           setIsShowLoader(false);
+        })
+        .catch(() => {
+          toast.error("خطایی رخ داده است", {
+            position: "top-left",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+          navigate("/");
         });
     } else {
-      fetch(`http://127.0.0.1:8000/home/food/${categoryName}`).then((res) => {
-        if (res.ok) {
-          res.json().then((data) => {
-            if (data.food.length) {
-              setFoods(data.food);
-              setSortedFoods(data.food);
-              setCategories(data.category);
-              setIsShowLoader(false);
-            } else {
-              navigate("/foods/all/1");
-            }
-          });
-        } else {
+      apiRequests
+        .get(`/home/food/${categoryName}`)
+        .then((res) => {
+          if (res.data.food.length) {
+            setFoods(res.data.food);
+            setSortedFoods(res.data.food);
+            setCategories(res.data.category);
+            setIsShowLoader(false);
+          } else {
+            navigate("/foods/all/1");
+          }
+        })
+        .catch(() => {
           navigate("/foods/all/1");
-        }
-      });
+        });
     }
     if (!shownFoods.length) {
       navigate(`/foods/${categoryName}/1`);

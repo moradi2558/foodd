@@ -8,7 +8,6 @@ import "./Navbar.css";
 import { NavLink, useParams, useLocation, Link } from "react-router-dom";
 import Offcanvas from "react-bootstrap/Offcanvas";
 import MiniCart from "../MiniCart/MiniCart";
-import { toast } from "react-toastify";
 import AuthContext from "../../context/AuthContext";
 import Swal from "sweetalert2";
 import { IoMdClose } from "react-icons/io";
@@ -36,38 +35,12 @@ const Navbar = () => {
       },
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch("http://localhost:8000/account/logout/", {
-          headers: {
-            Authorization: `Bearer ${
-              JSON.parse(localStorage.getItem("user")).token
-            }`,
-          },
-        }).then((res) => {
-          if (res.ok) {
-            toast.success("با موفقیت از حساب کاربری خود خارج شدید", {
-              position: "top-left",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "light",
-            });
-            authContext.logout();
-          } else {
-            toast.error("خطایی رخ داده است", {
-              position: "top-left",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "light",
-            });
-          }
+        Swal.fire({
+          icon: "success",
+          title: "با موفقیت از حساب کاربری خود خارج شدید",
+          confirmButtonText: "تایید",
         });
+        authContext.logout();
       }
     });
   };

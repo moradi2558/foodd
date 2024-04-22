@@ -1,22 +1,45 @@
 import React, { useContext } from "react";
 import AuthContext from "../../context/AuthContext";
+import apiRequests from "../../services/configs";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const MiniCartBox = ({ food, quantity }) => {
+  const navigate = useNavigate();
   const authContext = useContext(AuthContext);
   const discountedPrice = food.price - (food.price * food.discount) / 100;
   const removeCartHandler = (foodID) => {
-    fetch(`http://localhost:8000/cart/remove/${foodID}/`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${
-          JSON.parse(localStorage.getItem("user")).token
-        }`,
-      },
-    }).then((res) => {
-      if (res.ok) {
-        authContext.getCartUser();
-      }
-    });
+    if (localStorage.getItem("user")) {
+      apiRequests
+        .delete(`/cart/remove/${foodID}/`, {
+          headers: {
+            Authorization: `Bearer ${
+              JSON.parse(localStorage.getItem("user")).token
+            }`,
+          },
+        })
+        .then(() => authContext.getCartUser())
+        .catch((err) => {
+          if (err.response.status === 401) {
+            authContext.logout();
+            navigate("/login");
+          } else {
+            toast.error("خطایی رخ داده است", {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+          }
+        });
+    } else {
+      authContext.logout();
+      navigate("/login");
+    }
   };
   return (
     <div

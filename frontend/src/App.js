@@ -5,6 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import AuthContext from "./context/AuthContext";
 import routes from "./Routes";
 import { useEffect, useState } from "react";
+import apiRequests from "./services/configs";
 function App() {
   const router = useRoutes(routes);
   const navigate = useNavigate();
@@ -38,26 +39,22 @@ function App() {
   const getCartUser = () => {
     if (localStorage.getItem("user")) {
       setToken(JSON.parse(localStorage.getItem("user")).token);
-      fetch("http://localhost:8000/cart/cart/1/", {
-        headers: {
-          Authorization: `Bearer ${
-            JSON.parse(localStorage.getItem("user")).token
-          }`,
-        },
-      })
-        .then((res) => {
-          if (res.status === 200) {
-            setIsLoggedIn(true);
-            return res.json();
-          }
+      apiRequests
+        .get("/cart/cart/1/", {
+          headers: {
+            Authorization: `Bearer ${
+              JSON.parse(localStorage.getItem("user")).token
+            }`,
+          },
         })
-        .then((result) => {
+        .then((res) => {
+          setIsLoggedIn(true);
           setCart({
             cart: [],
             totalPrice: 0,
             count: 0,
           });
-          result.reduce((prevValue, currentValue) => {
+          res.data.reduce((prevValue, currentValue) => {
             let sumPrice =
               prevValue +
               (currentValue.food.price -
@@ -69,7 +66,7 @@ function App() {
             }));
             return prevValue;
           }, 0);
-          result.forEach((item) => {
+          res.data.forEach((item) => {
             setCart((prev) => ({
               ...prev,
               count: prev.count + item.quantity,
@@ -77,8 +74,13 @@ function App() {
           });
           setCart((prev) => ({
             ...prev,
-            cart: result.reverse(),
+            cart: res.data.reverse(),
           }));
+        })
+        .catch((err) => {
+          if (err.response.status === 401) {
+            logout();
+          }
         });
     } else {
       logout();

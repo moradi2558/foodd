@@ -17,6 +17,7 @@ import Breadcrumb from "../../components/Breadcrumb/Breadcrumb";
 import Loader from "../../components/Loader/Loader";
 import { toast } from "react-toastify";
 import AuthContext from "../../context/AuthContext";
+import apiRequests from "../../services/configs";
 const Register = () => {
   const authContext = useContext(AuthContext);
   const [formState, onInputHandler] = useForm(
@@ -52,28 +53,38 @@ const Register = () => {
     formData.append("email", formState.inputs.email.value);
     formData.append("password", formState.inputs.password.value);
     formData.append("password2", formState.inputs.repeatPassword.value);
-    fetch("http://localhost:8000/account/register/", {
-      method: "POST",
-      body: formData,
-    })
-      .then((res) => {
-        setIsShowLoader(false);
-        if (res.ok) {
-          toast.success("با موفقیت ثبت نام کردید", {
-            position: "top-left",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
-        }
-        return res.json();
+    apiRequests
+      .post("/account/register/", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       })
-      .then((result) => {
-        if (result.email && result.username) {
+      .then((res) => {
+        console.log(res);
+        toast.success("با موفقیت ثبت نام کردید", {
+          position: "top-left",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        apiRequests
+          .post("/account/token/", {
+            username: res.data.user.username,
+            password: res.data.user.password,
+          })
+          .then(async (res) => {
+            await authContext.login(res.data.access);
+            navigate(-1);
+            setIsShowLoader(false);
+          });
+      })
+      .catch((err) => {
+        setIsShowLoader(false);
+        if (err.response.data.email && err.response.data.username) {
           toast.error("کاربری با این ایمیل و نام کاربری وجود دارد", {
             position: "top-left",
             autoClose: 5000,
@@ -84,7 +95,7 @@ const Register = () => {
             progress: undefined,
             theme: "light",
           });
-        } else if (result.email) {
+        } else if (err.response.data.email) {
           toast.error("کاربری با این ایمیل وجود دارد", {
             position: "top-left",
             autoClose: 5000,
@@ -95,7 +106,7 @@ const Register = () => {
             progress: undefined,
             theme: "light",
           });
-        } else if (result.username) {
+        } else if (err.response.data.username) {
           toast.error("کاربری با این نام کاربری وجود دارد", {
             position: "top-left",
             autoClose: 5000,
@@ -106,22 +117,6 @@ const Register = () => {
             progress: undefined,
             theme: "light",
           });
-        } else if (result.user) {
-          fetch("http://localhost:8000/account/token/", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              username: result.user.username,
-              password: result.user.password,
-            }),
-          })
-            .then((res) => res.json())
-            .then((data) => {
-              authContext.login(data.access);
-              navigate(-1);
-            });
         }
       });
   };

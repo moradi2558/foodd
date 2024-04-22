@@ -2,21 +2,36 @@ import React, { useEffect, useState } from "react";
 import Footer from "../../components/Footer/Footer";
 import Navbar from "../../components/Navbar/Navbar";
 import Breadcrumb from "../../components/Breadcrumb/Breadcrumb";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import FoodBox from "../../components/FoodBox/FoodBox";
 import { FaSearch } from "react-icons/fa";
+import apiRequests from "../../services/configs";
+import { toast } from "react-toastify";
 const SearchResult = () => {
+  const navigate = useNavigate();
   const [foods, setFoods] = useState([]);
   const { searchValue } = useParams();
   const [searchVal, setSearchValue] = useState("");
   useEffect(() => {
-    fetch("http://localhost:8000/home/")
-      .then((res) => res.json())
-      .then((data) => {
-        const filteredFoods = data.food.filter((food) =>
+    apiRequests("/home/")
+      .then((res) => {
+        const filteredFoods = res.data.food.filter((food) =>
           food.name.includes(searchValue)
         );
         setFoods(filteredFoods);
+      })
+      .catch(() => {
+        toast.error("خطایی رخ داده است", {
+          position: "top-left",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        navigate(-1);
       });
   }, [searchValue]);
   return (

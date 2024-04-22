@@ -3,6 +3,7 @@ import { BsTwitterX } from "react-icons/bs";
 import { FaFacebookF } from "react-icons/fa";
 import { FaTelegramPlane } from "react-icons/fa";
 import { FaLinkedinIn } from "react-icons/fa";
+import { Link } from "react-router-dom";
 import "./Landing.css";
 const Landing = () => {
   return (
@@ -70,9 +71,12 @@ const Landing = () => {
               <FaFacebookF className="tw-text-gray-600/80 hover:tw-text-yellow-500 tw-cursor-pointer tw-ml-2 lg:tw-ml-4 tw-transition tw-duration-300" />
               <FaLinkedinIn className="tw-text-gray-600/80 hover:tw-text-yellow-500 tw-cursor-pointer tw-ml-2 lg:tw-ml-4 tw-transition tw-duration-300" />
             </div>
-            <button className="tw-border tw-border-yellow-500 tw-px-4 tw-py-2 tw-rounded-3xl hover:tw-bg-yellow-500 tw-cursor-pointer tw-text-sm hover:tw-text-white lg:tw-text-xl tw-transition tw-duration-500">
+            <Link
+              to="/foods/all/1"
+              className="tw-border tw-border-yellow-500 tw-px-4 tw-py-2 tw-rounded-3xl hover:tw-bg-yellow-500 tw-cursor-pointer tw-text-sm hover:tw-text-white lg:tw-text-xl tw-transition tw-duration-500"
+            >
               سفارش
-            </button>
+            </Link>
           </div>
         </div>
       </div>

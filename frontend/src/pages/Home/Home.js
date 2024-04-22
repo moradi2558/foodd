@@ -6,23 +6,22 @@ import LastFoods from "../../components/LastFoods/LastFoods";
 import HomeSection from "../../components/HomeSection/HomeSection";
 import Footer from "../../components/Footer/Footer";
 import Loader from "../../components/Loader/Loader";
+import apiRequests from "../../services/configs";
 
 const Index = () => {
   const [categories, setCategories] = useState([]);
   const [foods, setFoods] = useState([]);
   const [isShowLoader, setIsShowLoader] = useState(true);
   useEffect(() => {
-    fetch("http://localhost:8000/home/")
-      .then((res) => res.json())
-      .then((data) => {
-        setCategories(data.category);
-        setFoods(data.food);
-        setIsShowLoader(false);
-      });
+    apiRequests.get("/home/").then((res) => {
+      setCategories(res.data.category);
+      setFoods(res.data.food);
+      setIsShowLoader(false);
+    });
   }, []);
   return (
     <>
-    <Navbar />
+      <Navbar />
       {isShowLoader ? (
         <>
           <Loader />

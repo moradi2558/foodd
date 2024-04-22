@@ -3,23 +3,43 @@ import { IoIosCloseCircleOutline } from "react-icons/io";
 import AuthContext from "../../context/AuthContext";
 import { FaTrash } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
+import apiRequests from "../../services/configs";
+import { toast } from "react-toastify";
 const CartBox = ({ food, quantity }) => {
   const navigate = useNavigate();
   const authContext = useContext(AuthContext);
   const plusQty = (foodID) => {
     if (localStorage.getItem("user")) {
-      fetch(`http://localhost:8000/cart/cart/${foodID}/`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${
-            JSON.parse(localStorage.getItem("user")).token
-          }`,
-        },
-      }).then((res) => {
-        if (res.ok) {
-          authContext.getCartUser();
-        }
-      });
+      apiRequests
+        .post(
+          `/cart/cart/${foodID}/`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${
+                JSON.parse(localStorage.getItem("user")).token
+              }`,
+            },
+          }
+        )
+        .then(() => authContext.getCartUser())
+        .catch((err) => {
+          if (err.response.status === 401) {
+            authContext.logout();
+            navigate("/login");
+          } else {
+            toast.error("خطایی رخ داده است", {
+              position: "top-left",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+          }
+        });
     } else {
       authContext.logout();
       navigate("/login");
@@ -27,17 +47,32 @@ const CartBox = ({ food, quantity }) => {
   };
   const minusQty = (foodID) => {
     if (localStorage.getItem("user")) {
-      fetch(`http://localhost:8000/cart/remove/${foodID}/`, {
-        headers: {
-          Authorization: `Bearer ${
-            JSON.parse(localStorage.getItem("user")).token
-          }`,
-        },
-      }).then((res) => {
-        if (res.ok) {
-          authContext.getCartUser();
-        }
-      });
+      apiRequests
+        .get(`/cart/remove/${foodID}/`, {
+          headers: {
+            Authorization: `Bearer ${
+              JSON.parse(localStorage.getItem("user")).token
+            }`,
+          },
+        })
+        .then(() => authContext.getCartUser())
+        .catch((err) => {
+          if (err.response.status === 401) {
+            authContext.logout();
+            navigate("/login");
+          } else {
+            toast.error("خطایی رخ داده است", {
+              position: "top-left",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+          }
+        });
     } else {
       authContext.logout();
       navigate("/login");
@@ -45,18 +80,32 @@ const CartBox = ({ food, quantity }) => {
   };
   const removeCart = (foodID) => {
     if (localStorage.getItem("user")) {
-      fetch(`http://localhost:8000/cart/remove/${foodID}/`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${
-            JSON.parse(localStorage.getItem("user")).token
-          }`,
-        },
-      }).then((res) => {
-        if (res.ok) {
-          authContext.getCartUser();
-        }
-      });
+      apiRequests
+        .delete(`/cart/remove/${foodID}/`, {
+          headers: {
+            Authorization: `Bearer ${
+              JSON.parse(localStorage.getItem("user")).token
+            }`,
+          },
+        })
+        .then(() => authContext.getCartUser())
+        .catch((err) => {
+          if (err.response.status === 401) {
+            authContext.logout();
+            navigate("/login");
+          } else {
+            toast.error("خطایی رخ داده است", {
+              position: "top-left",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+          }
+        });
     } else {
       authContext.logout();
       navigate("/login");
