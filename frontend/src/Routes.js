@@ -7,7 +7,9 @@ import Register from "./pages/Register/Register";
 import UserLoggedInPrivate from "./components/Private/UserLoggedInPrivate";
 import OrderPrivate from "./components/Private/OrderPrivate";
 import SearchResult from "./pages/SearchResult/SearchResult";
+import NotFound from "./pages/NotFound/NotFound";
 const routes = [
+  { path: "*", element: <NotFound /> },
   { path: "/", element: <Home /> },
   {
     path: "/login",
