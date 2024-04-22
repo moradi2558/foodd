@@ -13,7 +13,7 @@ const Landing = () => {
         style={{ direction: "rtl" }}
       >
         <div>
-          <div className="tw-absolute tw--right-28  md:tw--right-48 xl:tw--right-28 2xl:tw-right-0">
+          <div className="tw-absolute tw--right-28 md:tw--right-48 xl:tw--right-28 2xl:tw-right-0">
             <img
               src="/images/pizza_slider.png"
               className="tw-w-1/2 md:tw-w-4/5 xl:tw-w-full"
