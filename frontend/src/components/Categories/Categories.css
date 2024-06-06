@@ -1,7 +1,0 @@
-.categories__container {
-    background-image: url("../../../public/images/papper_background.png");
-    /* margin-bottom: 1rem; */
-    background-size: 10% 25%;
-    display: flex;
-    position: relative;
-}

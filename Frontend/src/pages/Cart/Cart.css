@@ -1,0 +1,36 @@
+@media screen and (max-width : 767px) {
+    .cart_table {
+        width: 60rem;
+    }
+}
+
+@media screen and (min-width : 768px) {
+    .cart_table {
+        width: 60rem;
+    }
+}
+
+@media screen and (min-width : 1508px) {
+    .cart_table {
+        width: 70rem;
+    }
+}
+
+.cart_table tbody tr td {
+    text-align: center;
+    padding: 1rem 0;
+}
+
+.cart_table thead tr th {
+    text-align: center;
+    padding-bottom: 1rem;
+}
+
+.cart_table tbody tr {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.27);
+}
+
+.cart_table thead tr {
+    border-bottom: 2px solid black;
+    border-top: 20px solid white;
+}

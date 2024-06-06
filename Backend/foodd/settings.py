@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'drf_spectacular',
+    'storages',
+    'django_celery_beat',
 ]
 
 
@@ -98,11 +100,15 @@ WSGI_APPLICATION = 'foodd.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+        'default': {
+                'ENGINE': 'django.db.backends.postgresql_psycopg2',
+                'NAME': 'foodd_db',
+                'USER' : 'postgres',
+                'PASSWORD' : 'postgres',
+                'HOST' : '127.0.0.1',
+                'PORT' : '5432',
+            }
+        }
 
 
 # Password validation
@@ -188,3 +194,12 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainSlidingSerializer",
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
+
+# # Abro Arvan
+# DEFAULT_FILE_STORAGE = "storages.backends.s3.S3Storage"
+# AWS_S3_ACCESS_KEY_ID = "9b7f495a-d355-44cd-9932-a5fef2cdab6e"
+# AWS_SECRET_ACCESS_KEY = "5c1f958af3fbdbab670133e02bf39a085e54a09226b7cfe4f928dd3ac28b0b14"
+# AWS_S3_ENDPOINT_URL= "s3.ir-tbz-sh1.arvanstorage.ir"
+# AWS_STORAGE_BUCKET_NAME = "foodbucket"
+# AWS_SERVICE_NAME = "s3"
+# AWS_FILE_OVERWRITE = False

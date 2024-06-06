@@ -1,6 +1,7 @@
 from home.models                    import *
 from.models                         import *
-from .serializers                   import *
+from.serializers                    import *
+from.                               import tasks
 from rest_framework.views           import APIView
 from rest_framework.response        import Response
 from django.contrib.auth.decorators import login_required
@@ -25,8 +26,6 @@ class CartView(APIView):
         private
         
         create cart 
-        
-        need : quantity
         """
         food = Food.objects.get(id=food_id)
         if Cart.objects.filter(food=food_id,user=request.user).exists():
@@ -54,13 +53,17 @@ class Remove_CartView(APIView):
             data.save()
             return Response('being lower...')
         else:
-            Cart.objects.get(food=food_id,user=request.user).delete()
+            user=request.user
+            tasks.delete_cart_celery(food_id,user)
             return Response('being removed...')
       
     def delete(self,request,food_id):
-        data = Cart.objects.get(food=food_id,user=request.user).delete()
+        user=request.user
+        tasks.delete_cart_celery(food_id,user)
         return Response('item being deleted')
-    
+
+
+
 class OrderView(APIView):
     permission_classes = [IsAuthenticated]
     

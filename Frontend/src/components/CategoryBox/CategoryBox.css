@@ -1,0 +1,18 @@
+.category_name {
+    background-color: rgb(227 160 8);
+    clip-path: polygon(0 0, 100% 5%, 90% 42%, 100% 95%, 0 100%, 10% 56%);
+    color: white;
+    padding: 5px 0;
+    width: 170px;
+    display: flex;
+    justify-content: center;
+    transition: background-color 400ms;
+} 
+
+
+.category_box:hover {
+    .category_name {
+        background-color: black;
+    }
+    cursor: pointer;
+}
