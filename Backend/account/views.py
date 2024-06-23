@@ -45,15 +45,6 @@ class UserLoginView(APIView):
                 return Response(ser_data.data,status = 201)
             elif not User.objects.filter(username =data['username']).exists():
                 return Response('نام کاربری موردنظر وجود ندارد')
-                user = User.objects.filter(id=user.id)
-                user_info = UserInfoSerializer(instance=user,many=True)
-                cart_info = Cart.objects.filter(user=request.user)
-                cart = CartSerializer(instance=cart_info,many=True)
-                context = {
-                    'user':user_info.data,
-                    'cart':cart.data,
-                }       
-                return Response(context,status = 201)
             elif not User.objects.filter(username = data['username']).exists():
                 return Response({'این کاربر وجود ندارد'})
             else:
