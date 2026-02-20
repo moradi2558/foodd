@@ -26,7 +26,7 @@ services:
 
   celery_worker:
     container_name: celery_worker
-    command: "celery -A food worker -l INFO"
+    command: "celery -A foodd worker -l INFO"
     depends_on:
       - app
       - rabbitmq
@@ -34,16 +34,18 @@ services:
     build: .
     environment:
       - C_FORCE_ROOT="true"
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
     networks:
       - main
     restart: always
 
   app:
     build: . 
-    command: sh -c "python manage.py migrate && gunicorn A.wsgi -b 0.0.0.0:8000"
+    command: sh -c "python manage.py migrate && gunicorn foodd.wsgi:application --bind 0.0.0.0:8000"
     container_name: app
     volumes:
-      - .:/code/
+      - .:/Backend/
     depends_on:
       - postgres 
       - rabbitmq
@@ -52,10 +54,18 @@ services:
     networks:
       - main
     restart: always
+    environment:
+      - POSTGRES_DB=foodd_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
 
   nginx:
     container_name: nginx
-    command: mginx -q 'daemon off'
+    command: nginx -g 'daemon off;'
     depends_on: 
       - app
     image: nginx:1.25.5
@@ -75,6 +85,9 @@ services:
       - ../Frontend:/app 
     ports:
       - "3000:3000"
+    networks:
+      - main
+    restart: always
 
 networks:
   main:
